@@ -1,4 +1,4 @@
-var dimension = 3;
+var dimension = 2;
 var canvas;
 var context;
 var pages = new Array();
