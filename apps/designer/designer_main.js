@@ -709,7 +709,7 @@ function savePage(doc, pageIndex)
         var segment = thePage.segments[i];
         var coords = "[";
         for (var j = 0; j < segment.values.length; j++) {
-            coords += segment.values[j] + ",";
+            coords += segment.values[j] + ", ";
         }
         coords += "]";
         var parentIndex = segment.parentIndex;
