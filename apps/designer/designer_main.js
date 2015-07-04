@@ -1270,16 +1270,16 @@ function main()
 {
    particlesCreated = false;
    initTime = date.getTime();
-
-   var i = 0;
    
    var fontChooser = document.getElementById("fontchooser");
    if (fontChooser != null)
    {
        fontChooser.addEventListener("change", function(e) {
            fontName = fontChooser.options[fontChooser.selectedIndex].text;
-           for (i = 0; i < selectedIndices.length; i++) {
-               thePage.boxes[selectedIndices[i]].fontName = fontName;
+           for (var i = 0; i < selectedIndices.length; i++) {
+		       var currBox = thePage.boxes[selectedIndices[i]];
+               currBox.fontName = fontName;
+	           dirtyTextBox(currBox);
            }
        });
    }
@@ -1289,8 +1289,10 @@ function main()
    {
        fontSizeChooser.addEventListener("change", function(e) {
            fontHeight = Number(fontSizeChooser.options[fontSizeChooser.selectedIndex].text);
-           for (i = 0; i < selectedIndices.length; i++) {
-               thePage.boxes[selectedIndices[i]].fontHeight = fontHeight;
+           for (var i = 0; i < selectedIndices.length; i++) {
+		       var currBox = thePage.boxes[selectedIndices[i]];
+               currBox.fontHeight = fontHeight;
+	           dirtyTextBox(currBox);
            }
        });
    }
@@ -1304,8 +1306,10 @@ function main()
            if (fontType == "Normal") {
                fontType = "";
            }
-           for (i = 0; i < selectedIndices.length; i++) {
-               thePage.boxes[selectedIndices[i]].fontType = fontType;
+           for (var i = 0; i < selectedIndices.length; i++) {
+		       var currBox = thePage.boxes[selectedIndices[i]];
+               currBox.fontType = fontType;
+	           dirtyTextBox(currBox);
            }
        });
    }
