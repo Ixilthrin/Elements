@@ -172,7 +172,7 @@ function drawTextInBox(box, xPos, yPos, isSelected, imageIndex)
     }
     var imagePath = theText.split()[0];
     var imageType = imagePath.substr(imagePath.length - 4);
-    if (imageType == ".jpg" || imageType == ".gif") {
+    if (imageType == ".jpg" || imageType == ".gif" || imageType == ".png" || imageType == "bmp") {
         var createImage = true;
         var index = 0;
         for (; index < thePage.imageNamess.length; index++) {
@@ -205,9 +205,11 @@ function drawTextInBox(box, xPos, yPos, isSelected, imageIndex)
             box.width = thePage.imageWidths[index];
             box.height = thePage.imageHeights[index];
             } catch (error) {}
+			dirtyTextBox(box);
             return;
         }
     }
+		
     var lineHeight = box.fontHeight;
     var boxMaxWidth = box.maxWidth;
     var lines = splitLines(backBuffer, theText, boxMaxWidth);
@@ -269,6 +271,13 @@ function drawTextInBox(box, xPos, yPos, isSelected, imageIndex)
 		    box.imageData = backBuffer.getImageData(xPos, yPos - lineHeight, box.width * 1.5, box.height * 1.5);
 		}
 	}
+}
+
+function dirtyTextBox(box)
+{
+	needsRedraw = true;
+	box.imageData = undefined;
+	box.selectedImageData = undefined;
 }
 
 function runCommand(command)
@@ -1177,13 +1186,6 @@ function modifyTextBoxFont(box, increment)
         fontHeight = currentHeight;
     }
 	dirtyTextBox(box);
-}
-
-function dirtyTextBox(box)
-{
-	needsRedraw = true;
-	box.imageData = undefined;
-	box.selectedImageData = undefined;
 }
 
 function modifySegmentWidth(segment, increasing)
