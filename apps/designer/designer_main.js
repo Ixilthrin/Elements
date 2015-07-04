@@ -264,11 +264,11 @@ function drawTextInBox(box, xPos, yPos, isSelected, imageIndex)
 		
 		if (isSelected)
 		{
-		    box.selectedImageData = backBuffer.getImageData(xPos, yPos - lineHeight, box.width * 1.5, box.height * 1.5);
+		    box.selectedImageData = backBuffer.getImageData(xPos, yPos - lineHeight, box.width, box.height * 1.5);
 		}
 		else
 		{
-		    box.imageData = backBuffer.getImageData(xPos, yPos - lineHeight, box.width * 1.5, box.height * 1.5);
+		    box.imageData = backBuffer.getImageData(xPos, yPos - lineHeight, box.width, box.height * 1.5);
 		}
 	}
 }
