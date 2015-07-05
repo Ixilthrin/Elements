@@ -639,9 +639,12 @@ function export_simple_command()
 	
     var thePage = pages[pageIndex]; 
 	
+	var boxes = sortByPositions(thePage.boxes, compareX);
+	boxes = sortByPositions(boxes, compareY);
+	
 	var strings = "[";
-    for (var i = 0; i < thePage.boxes.length; i++) {
-        var b = thePage.boxes[i];
+    for (var i = 0; i < boxes.length; i++) {
+        var b = boxes[i];
         if (b.text == undefined || b.text == null || b.text.length == 0)
 		    continue;
 			
@@ -2260,6 +2263,56 @@ function makeSegmentSelection(mouseX, mouseY, isCtrlPress)
 }
 
 var dcount = 0;
+
+function compareX(a, b)
+{
+    if (a.x < b.x)
+	    return -1;
+		
+	return 1;
+}
+
+function compareY(a, b)
+{
+    if (a.y < b.y)
+	    return -1;
+		
+	return 1;
+}
+
+function sortByPositions(boxes, compare)
+{
+    var arrayCopy = [];
+	var i = 0;
+	for (i = 0; i < boxes.length; i++)
+	{
+	    arrayCopy.push(boxes[i]);
+	}
+	
+    var sorted = [];
+	var currentMinX = 0;
+	
+	while (arrayCopy.length > 0)
+	{
+	    if (arrayCopy.length == 1)
+		{
+		    sorted.push(arrayCopy[0]);
+			break;
+		}
+		
+		var indexOfSmallest = 0;
+	    for (i = 1; i < arrayCopy.length; i++)
+	    {
+	        if (compare(arrayCopy[i], arrayCopy[indexOfSmallest]) < 0)
+			    indexOfSmallest = i;
+	    }
+		
+		sorted.push(arrayCopy[indexOfSmallest]);
+		arrayCopy.splice(indexOfSmallest, 1);
+    }
+	
+	return sorted;
+}
 
 ////////////////////////////////////////////////////
 // Line Segments - To be placed in separate file
