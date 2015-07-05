@@ -143,17 +143,17 @@ function draw()
             newObject.maxWidth = 0;
         }
         currentMaxWidth = newObject.maxWidth;
-        drawTextInBox(newObject, startX, startY, true, thePage.boxes.length);
+        drawTextInBox(newObject, startX, startY, false, thePage.boxes.length);
 	
-	    if (newObject.selectedImageData != undefined)
+	    if (newObject.imageData != undefined)
 		{
 		    if (dimension == 2)
 			{
-	            drawTextbox2d(context, newObject.selectedImageData, startX, startY - newObject.fontHeight);
+	            drawTextbox2d(context, newObject.imageData, startX, startY - newObject.fontHeight);
 			}
 			else
 			{
-	            drawTextbox3d(context, newObject.selectedImageData, startX, startY - newObject.fontHeight, newObject.width, newObject.height);
+	            drawTextbox3d(context, newObject.imageData, startX, startY - newObject.fontHeight, newObject.width, newObject.height);
 			}
 		}
     }
