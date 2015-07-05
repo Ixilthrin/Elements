@@ -324,7 +324,6 @@ function createTextObject(text, x, y, width, height, fontHeight,
 function createTextObject2(text, x, y, width, height, fontHeight, fontName,
                            fontType, color, maxWidth, time, keys, values)
 {
-
 	needsRedraw = true;
     var t = new Object();
     t.text = text;
@@ -339,6 +338,11 @@ function createTextObject2(text, x, y, width, height, fontHeight, fontName,
     t.maxWidth = maxWidth;
     t.time = time;
     t.properties = new Object();
+	if (keys == undefined || keys == null)
+	{
+	    keys = [];
+		values = [];
+    }
     t.properties.keys = keys;
     t.properties.values = values;
     return t;
@@ -567,30 +571,32 @@ function split_command() {
 }
 
 function join_command() {
+    if (selectedIndices.length < 2)
+	    return;
+		
 	needsRedraw = true;
-    var i;
-    var j;
-    var newText = "";
-    var o = new Object();
-    if (selectedIndices.length > 0) {
-        o = thePage.boxes[selectedIndices[0]];
-        if (o.keys == undefined) {
-            o.keys = new Array();
-        }
-        if (o.values == undefined) {
-            o.values = new Array();
-        }
-        newText = o.text;
+    var boxes = [];
+	var i = 0;
+    for (i = 0; i < selectedIndices.length; i++) {
+	    boxes.push(thePage.boxes[selectedIndices[i]]);
+	}
+		
+	boxes = sortByPositions(boxes, compareX);
+	boxes = sortByPositions(boxes, compareY);
+	
+    var newText = boxes[0].text;
+    for (i = 1; i < boxes.length; i++) {
+        newText += " " + boxes[i].text;
     }
-    for (i = 1; i < selectedIndices.length; i++) {
-        newText += " " + thePage.boxes[selectedIndices[i]].text;
-    }
-    selectedIndices.sort();
+	
     for (i = selectedIndices.length - 1; i >= 0; i--) {
         thePage.boxes.splice(selectedIndices[i], 1);
     }
+	selectedIndices = [];
+	
+    var o = boxes[0];
     thePage.boxes.push(createTextObject2(newText, o.x, o.y, o.width, o.height, o.fontHeight, o.fontName, o.fontType, o.color, o.maxWidth, o.time, o.keys, o.values));
-    selectedIndices = new Array();
+    
 }
 
 function setColor(color)
@@ -2274,7 +2280,7 @@ function compareX(a, b)
 
 function compareY(a, b)
 {
-    if (a.y < b.y)
+    if (a.y + 20 < b.y)
 	    return -1;
 		
 	return 1;
