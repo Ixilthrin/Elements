@@ -215,7 +215,7 @@ function drawTextInBox(box, xPos, yPos, isSelected, imageIndex)
     var lines = splitLines(backBuffer, theText, boxMaxWidth);
     var height = lines.length * lineHeight;
     var width = 0;
-    //backBuffer.font = box.fontType + " " + box.fontHeight + "px " + box.fontName;
+    backBuffer.font = box.fontType + " " + box.fontHeight + "px " + box.fontName;
     for (var i = 0; i < lines.length; i++) {
         var currentWidth = backBuffer.measureText(lines[i]).width;
         if (currentWidth > width) {
@@ -595,8 +595,11 @@ function join_command() {
 	selectedIndices = [];
 	
     var o = boxes[0];
-    thePage.boxes.push(createTextObject2(newText, o.x, o.y, o.width, o.height, o.fontHeight, o.fontName, o.fontType, o.color, o.maxWidth, o.time, o.keys, o.values));
+	
+	var newBox = createTextObject2(newText, o.x, o.y, o.width, o.height, o.fontHeight, o.fontName, o.fontType, o.color, o.maxWidth, o.time, o.keys, o.values)
+    thePage.boxes.push(newBox);
     
+	dirtyTextBox(newBox);
 }
 
 function setColor(color)
