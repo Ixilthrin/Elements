@@ -638,15 +638,24 @@ function export_simple_command()
     var doc = newWin.document;
 	
     var thePage = pages[pageIndex]; 
+	
+	var strings = "[";
     for (var i = 0; i < thePage.boxes.length; i++) {
         var b = thePage.boxes[i];
-
+        if (b.text == undefined || b.text == null || b.text.length == 0)
+		    continue;
+			
         var tempText = b.text;
 		var text = escapeSpecialSymbols(tempText);
-
-        doc.write("string" + i + " = \"" + text + "\"");
-        doc.write("<br>");
+  
+        strings += "\"" + text + "\"";
+		if (i < thePage.boxes.length - 1)
+		    strings += ", ";
     }
+	strings += "];";
+    doc.write("var strings = " + strings);
+    doc.write("<br>");
+	
     for (var i = 0; i < thePage.segments.length; i++) {
         var segment = thePage.segments[i];
         var coords = "[";
