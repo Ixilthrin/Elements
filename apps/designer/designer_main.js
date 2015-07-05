@@ -1604,7 +1604,7 @@ function main()
    
    canvas.addEventListener("mousedown", function(e) {
        e.preventDefault();
-	needsRedraw = true;
+	   needsRedraw = true;
        canvas.focus();
        mouseIsDown = true;
        firstClick = true;
@@ -2112,23 +2112,26 @@ function splitLines(context, text, maxWidth)
 
 function addCurrentText()
 {
-       if (text != undefined && text.trim() != "") {
-           currentText = new Object();
-           currentText.text = text;
-           currentText.maxWidth = currentMaxWidth;
-           currentText.x = startX; 
-           currentText.y = startY; 
-           currentText.width = currentMaxWidth;
-           currentText.height = 20;
-           currentText.fontHeight = fontHeight;
-           currentText.fontName = fontName;
-           currentText.fontType = fontType;
-           currentText.textColor = lineColor;
-           date = new Date();
-           currentText.time = date.getTime();
-           thePage.boxes.push(currentText);
-           text = new String();
-       }
+    if (text != undefined && text.trim() != "") {
+	    selectedIndices = [];
+		segmentSelectedIndices = [];
+	    needsRedraw = true;
+        currentText = new Object();
+        currentText.text = text;
+        currentText.maxWidth = currentMaxWidth;
+        currentText.x = startX; 
+        currentText.y = startY; 
+		currentText.width = text.length * 10;
+		currentText.height = 20;
+        currentText.fontHeight = fontHeight;
+        currentText.fontName = fontName;
+        currentText.fontType = fontType;
+        currentText.textColor = lineColor;
+        date = new Date();
+        currentText.time = date.getTime();
+		thePage.boxes.push(currentText);
+        text = new String();
+    }
 }
 
 function pageChanged()
@@ -2280,7 +2283,7 @@ function compareX(a, b)
 
 function compareY(a, b)
 {
-    if (a.y + 20 < b.y)
+    if (a.y + 10 < b.y)
 	    return -1;
 		
 	return 1;
