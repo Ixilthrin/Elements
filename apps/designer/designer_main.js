@@ -1211,15 +1211,8 @@ function modifyTextBoxWidth(box, increment)
 
 function modifyTextBoxFont(box, increment)
 {
-	needsRedraw = true;
-    box.fontHeight += increment;
-    var currentHeight = box.fontHeight;
-    if (currentHeight < fontHeight) {
-        box.fontHeight = fontHeight;
-    }
-    if (currentHeight >= minFontHeight) {
-        fontHeight = currentHeight;
-    }
+	if (box.fontHeight >= 5 || increment > 0)
+	    box.fontHeight += increment;
 	dirtyTextBox(box);
 }
 
