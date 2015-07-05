@@ -613,6 +613,54 @@ function updateSelectionColor()
     }
 }
 
+function escapeSpecialSymbols(oldText)
+{
+        var text = "";
+        for (var c = 0; c < oldText.length; c++) {
+            var char = oldText.charAt(c);
+            if (char == '"') {
+                text += "\\\"";
+            } else if (char == "<") {
+                text += "&lt;";
+            } else if (char == ">") {
+                text += "&gt;";
+            } else {
+                text += char;
+            }
+        }
+		return text;
+}
+
+function export_simple_command()
+{
+    addCurrentText();
+    var newWin = window.open();
+    var doc = newWin.document;
+	
+    var thePage = pages[pageIndex]; 
+    for (var i = 0; i < thePage.boxes.length; i++) {
+        var b = thePage.boxes[i];
+
+        var tempText = b.text;
+		var text = escapeSpecialSymbols(tempText);
+
+        doc.write("string" + i + " = \"" + text + "\"");
+        doc.write("<br>");
+    }
+    for (var i = 0; i < thePage.segments.length; i++) {
+        var segment = thePage.segments[i];
+        var coords = "[";
+		var j = 0;
+        for (j = 0; j < segment.values.length - 1; j++) {
+            coords += segment.values[j] + ", ";
+        }
+		coords += segment.values[j];
+        coords += "]";
+        doc.write("var segment" + i + " = " + coords);
+        doc.write("<br>");
+    }
+}
+
 function save()
 {
     addCurrentText();
@@ -646,22 +694,9 @@ function savePage(doc, pageIndex)
     var thePage = pages[pageIndex]; 
     for (var i = 0; i < thePage.boxes.length; i++) {
         var b = thePage.boxes[i];
-
-        // Escape the quotation mark in the output.
+		
         var tempText = b.text;
-        var text = "";
-        for (var c = 0; c < tempText.length; c++) {
-            var char = tempText.charAt(c);
-            if (char == '"') {
-                text += "\\\"";
-            } else if (char == "<") {
-                text += "&lt;";
-            } else if (char == ">") {
-                text += "&gt;";
-            } else {
-                text += char;
-            }
-        }
+		var text = escapeSpecialSymbols(tempText);
 
         var x = b.x;
         var y = b.y;

@@ -51,6 +51,7 @@ function setupControls()
 	addIconButton(div, "", "Clear All", function() { clearAll(); }, "clear.jpg");
 	addIconButton(div, "", "Import From Text", function() { runCode(); }, "import.jpg");
 	addIconButton(div, "", "Export To Text Page", function() { save(); }, "export.jpg");
+	addIconButton(div, "", "Export To Generic Data", function() { export_simple_command(); }, "export-simple.jpg");
 	addIconButton(div, "", "Insert Text From Textbox", function() { insertText(); }, "inserttext.jpg");
 	addTextbox(div, "inserttext");
 	addBreak(div);
