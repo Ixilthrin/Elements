@@ -652,11 +652,11 @@ function export_simple_command()
         var coords = "[";
 		var j = 0;
         for (j = 0; j < segment.values.length - 1; j++) {
-            coords += segment.values[j] + ", ";
+            coords += Math.round(segment.values[j]) + ", ";
         }
-		coords += segment.values[j];
+		coords += Math.round(segment.values[j]);
         coords += "]";
-        doc.write("var segment" + i + " = " + coords);
+        doc.write("var segment" + i + " = " + coords + ";");
         doc.write("<br>");
     }
 }
