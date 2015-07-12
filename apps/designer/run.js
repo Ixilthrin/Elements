@@ -40,6 +40,8 @@ function setupControls()
 	addIconButton(div, "", "Straighten", function() { straighten_command(); }, "straighten.jpg");
 	addIconButton(div, "", "Adjust Point Count", function() { adjust_point_count_command(); }, "adjustpoints.jpg");
 	addIconButton(div, "", "Rotate Points", function() { rotate_points_command(); }, "rotate2.jpg");
+	addIconButton(div, "", "Add Property", function() { add_property_command(); }, "add-property.jpg");
+	addIconButton(div, "", "Clear All Properties", function() { clear_properties_command(); }, "clear-properties.jpg");
 	addBreak(div);
 	addIconButton(div, "", "Align Vertically", function() { alignVertical(); }, "vertical.jpg");
 	addIconButton(div, "", "Align Horizontally", function() { alignHorizontal(); }, "horizontal.jpg");

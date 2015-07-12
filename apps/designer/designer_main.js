@@ -57,6 +57,8 @@ var copiedSegments = new Array();
 var showPoints = false;
 var needsRedraw = true;
 
+var addingProperty = false;
+
 function draw() 
 {
     requestAnimationFrame(draw);
@@ -384,6 +386,29 @@ function switchMode()
 
 var groupNames = new Array();
 
+function add_property_command()
+{
+    addingProperty = true;
+}
+
+function clear_properties_command()
+{
+	for (var i = 0; i < selectedIndices.length; i++)
+	{
+		var boxObject = thePage.boxes[selectedIndices[i]];
+		boxObject.properties = {};
+		boxObject.properties.keys = [];
+		boxObject.properties.values = [];
+	}
+	for (var i = 0; i < segmentsSelectedIndices.length; i++)
+	{
+		var segmentObject = thePage.segments[segmentsSelectedIndices[i]];
+		segmentObject.properties = {};
+		segmentObject.properties.keys = [];
+		segmentObject.properties.values = [];
+	}
+}
+
 function group_command()
 {
 	needsRedraw = true;
@@ -651,7 +676,9 @@ function export_simple_command()
 	var boxes = sortByPositions(thePage.boxes, compareX);
 	boxes = sortByPositions(boxes, compareY);
 	
-	var strings = "[";
+    doc.write("var stringObjects = [");
+	doc.write("<br>");
+	
     for (var i = 0; i < boxes.length; i++) {
         var b = boxes[i];
         if (b.text == undefined || b.text == null || b.text.length == 0)
@@ -660,14 +687,34 @@ function export_simple_command()
         var tempText = b.text;
 		var text = escapeSpecialSymbols(tempText);
   
-        strings += "\"" + text + "\"";
+        doc.write("{ text:\"" + text + "\"");
+		if (b.properties != undefined && b.properties != null)
+		{
+		    doc.write(", keys:[");
+		    for (var j = 0; j < b.properties.keys.length; j++)
+			{
+			    doc.write("\"" + b.properties.keys[j] + "\"");
+				if (j < b.properties.keys.length - 1)
+				    doc.write(",");
+			}
+			doc.write("]");
+		    doc.write(", values:[");
+		    for (var j = 0; j < b.properties.values.length; j++)
+			{
+			    doc.write("\"" + b.properties.values[j] + "\"");
+				if (j < b.properties.values.length - 1)
+				    doc.write(",");
+			}
+			doc.write("]");
+		}
+		doc.write("}");
 		if (i < thePage.boxes.length - 1)
-		    strings += ", ";
+		    doc.write(", <br>");
     }
-	strings += "];";
-    doc.write("var strings = " + strings);
-    doc.write("<br>");
+    doc.write("<br>];<br>");
+		doc.write("<br>");
 	
+	doc.write("var segmentObjects = [");
     for (var i = 0; i < thePage.segments.length; i++) {
         var segment = thePage.segments[i];
         var coords = "[";
@@ -677,9 +724,37 @@ function export_simple_command()
         }
 		coords += Math.round(segment.values[j]);
         coords += "]";
-        doc.write("var segment" + i + " = " + coords + ";");
+        doc.write("<br>{");
+		doc.write("<br>");
+		doc.write("coords : " + coords);
+		if (segment.properties != undefined && segment.properties != null)
+		{
+		    doc.write(", ");
+			doc.write("<br>keys:[");
+		    for (var j = 0; j < segment.properties.keys.length; j++)
+			{
+			    doc.write("\"" + segment.properties.keys[j] + "\"");
+				if (j < segment.properties.keys.length - 1)
+				    doc.write(",");
+			}
+			doc.write("]");
+		    doc.write(", <br>values:[");
+		    for (var j = 0; j < segment.properties.values.length; j++)
+			{
+			    doc.write("\"" + segment.properties.values[j] + "\"");
+				if (j < segment.properties.values.length - 1)
+				    doc.write(",");
+			}
+			doc.write("]");
+		}
         doc.write("<br>");
+		doc.write("}");
+		if (i < thePage.segments.length - 1)
+		    doc.write(",");
     }
+    doc.write("<br>");
+	doc.write("];");
+    doc.write("<br>");
 }
 
 function save()
@@ -1085,6 +1160,11 @@ function checkCursorIntersection(x, y, add)
 			somethingSelected = true;
             if (selectedIndices.indexOf(i) < 0) {
                 if (!add) {
+				    if (addingProperty)
+					{
+					    addPropertyForSelection(thePage.boxes[i]);
+						addingProperty = false;
+					}
                     selectedIndices = [];
                     segmentsSelectedIndices = [];
                     pointsSelectedIndices = [];
@@ -1137,6 +1217,66 @@ function insertText()
     text += insertBox.value;
     insertBox.value = "";
     addCurrentText();
+}
+
+function addPropertyForSelection(box)
+{
+    var text = box.text;
+	var index = text.indexOf(":=");
+	var key = "";
+	var value = "";
+	if (index == -1)
+	{
+	    key = text;
+    }
+	else
+	{
+	    key = text.substring(0, index);
+		value = text.substring(index + 2, text.length);
+    }
+	
+	for (var i = 0; i < selectedIndices.length; i++)
+	{
+		var boxObject = thePage.boxes[selectedIndices[i]];
+		if (boxObject.properties == undefined || boxObject.properties == null)
+		{
+			boxObject.properties = {};
+			boxObject.properties.keys = [];
+			boxObject.properties.values = [];
+		}
+		var keyIndex = boxObject.properties.keys.indexOf(key);
+		if (keyIndex == -1)
+		{
+			boxObject.properties.keys.push(key);
+			boxObject.properties.values.push(value);
+		}
+		else
+		{
+			boxObject.properties.keys[keyIndex] = key;
+			boxObject.properties.values[keyIndex] = value;
+		}
+	}
+	for (var i = 0; i < segmentsSelectedIndices.length; i++)
+	{
+		var segmentObject = thePage.segments[segmentsSelectedIndices[i]];
+		if (segmentObject.properties == undefined || segmentObject.properties == null)
+		{
+			segmentObject.properties = {};
+			segmentObject.properties.keys = [];
+			segmentObject.properties.values = [];
+		}
+		var keyIndex = segmentObject.properties.keys.indexOf(key);
+		if (keyIndex == -1)
+		{
+			segmentObject.properties.keys.push(key);
+			segmentObject.properties.values.push(value);
+		}
+		else
+		{
+			segmentObject.properties.keys[keyIndex] = key;
+			segmentObject.properties.values[keyIndex] = value;
+		}
+	}
 }
 
 function copyToClipboard (text) {
